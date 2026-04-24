@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBTI 牛逼人格测试</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background: #f0f7ff;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(144, 174, 204, 0.15);
+        }
+        .title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c5282;
+        }
+        .slogan {
+            text-align: center;
+            font-size: 14px;
+            color: #4a7cb5;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+        .question {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            display: none;
+            color: #2c5282;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+            display: none;
+        }
+        .option {
+            background: #e6f0ff;
+            padding: 14px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+            border: 1px solid transparent;
+        }
+        .option:hover {
+            background: #d1e0ff;
+            border-color: #94bfff;
+        }
+        .option.active {
+            background: #b3d0ff;
+            border-color: #4a7cb5;
+            color: #2c5282;
+            font-weight: 500;
+        }
+        .btn {
+            background: #2c5282;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+            display: none;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: #234269;
+        }
+        .result {
+            display: none;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .result-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c5282;
+        }
+        /* 像素几何小人插画容器 */
+        .result-img {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 25px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #f0f7ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(144, 174, 204, 0.1);
+        }
+        .result-img svg {
+            width: 100%;
+            height: 100%;
+        }
+        .result-type {
+            font-size: 22px;
+            color: #2c5282;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .result-tag {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        .tag {
+            background: #e6f0ff;
+            color: #2c5282;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .result-desc {
+            font-size: 15px;
+            color: #444;
+            margin-bottom: 15px;
+            line-height: 1.9;
+            text-align: left;
+            background: #f8faff;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 3px solid #4a7cb5;
+        }
+        .result-dimensions {
+            text-align: left;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 15px;
+            background: #e6f0ff;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .result-motto {
+            background: #edf4ff;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            color: #4a7cb5;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        .result-sign {
+            font-size: 15px;
+            color: #4a7cb5;
+            font-style: italic;
+            margin-bottom: 20px;
+            text-align: left;
+            padding-left: 10px;
+            border-left: 2px solid #94bfff;
+        }
+        .share-copy {
+            background: #f0f7ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: left;
+            font-size: 14px;
+            color: #333;
+            border: 1px dashed #94bfff;
+        }
+        .share-copy p {
+            margin-bottom: 8px;
+        }
+        .result-slogan {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+            line-height: 1.8;
+        }
+        .start-btn {
+            display: block;
+        }
+        @media (max-width: 480px) {
+            .result-img {
+                width: 150px;
+                height: 150px;
+            }
+            .container {
+                padding: 20px 15px;
+            }
+            .title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">NBTI 牛逼人格测试</div>
+        <div class="slogan">
+            有些人活着就很 NB 了，NBTI 只是帮你确认一下。<br>
+            抽象人格鉴定｜发疯专属｜恶搞趣味测试
+        </div>
+
+        <button class="btn start-btn" id="startBtn">开始测试</button>
+
+        <div id="questionBox">
+            <div class="question" id="question"></div>
+            <div class="options" id="options"></div>
+            <button class="btn" id="nextBtn">下一题</button>
+        </div>
+
+        <div class="result" id="resultBox">
+            <div class="result-title">你的 NBTI 抽象人格</div>
+            <!-- 专属像素几何小人SVG插画 -->
+            <div class="result-img" id="resultImg"></div>
+            <div class="result-type" id="resultType"></div>
+            <div class="result-tag" id="resultTag"></div>
+            <div class="result-dimensions" id="resultDimensions"></div>
+            <div class="result-desc" id="resultDesc"></div>
+            <div class="result-motto" id="resultMotto"></div>
+            <div class="result-sign" id="resultSign"></div>
+            <div class="share-copy" id="shareCopy">
+                <p>✨ NBTI 抽象牛逼人格鉴定 ✨</p>
+                <p>我的人格：<span id="shareType"></span></p>
+                <p>一本正经的抽象，胡说八道的精准。</p>
+                <p>快来测测你是什么逆天人格👇</p>
+            </div>
+            <div class="result-slogan">
+                抽象才是真谛，牛逼无需定义。<br>
+                禁止过度解读，允许合理发疯。
+            </div>
+            <button class="btn" id="restartBtn" style="margin-top:20px;">重新测试</button>
+        </div>
+    </div>
+
+    <script>
+        // 18道 生活化/发疯/刺激/反骨 趣味题目
+        const questions = [
+            {
+                q: "1. 面对离谱安排，你敢当众拍桌子直接发疯硬刚吗？",
+                opts: [
+                    { text: "敢，反骨拉满，谁也不惯着", type: "N" },
+                    { text: "不敢，表面顺从，背地里吐槽", type: "n" }
+                ]
+            },
+            {
+                q: "2. 朋友喊你蹦极/跳楼机等极限项目，你会？",
+                opts: [
+                    { text: "直接冲，越刺激越上头", type: "B" },
+                    { text: "火速拒绝，保命第一绝不作死", type: "b" }
+                ]
+            },
+            {
+                q: "3. 别人给你画大饼洗脑，你的状态是？",
+                opts: [
+                    { text: "人间清醒，一眼看穿所有套路", type: "T" },
+                    { text: "随缘敷衍，左耳进右耳出", type: "t" }
+                ]
+            },
+            {
+                q: "4. 多人饭局聚会，你属于？",
+                opts: [
+                    { text: "社牛控场，全场气氛主宰", type: "I" },
+                    { text: "透明干饭人，全程沉默隐身", type: "i" }
+                ]
+            },
+            {
+                q: "5. 你的牛逼属性，是天生自带还是后天被逼出来？",
+                opts: [
+                    { text: "天生顶配，出厂自带牛逼buff", type: "N" },
+                    { text: "人间逆袭，全靠生活毒打修炼", type: "n" }
+                ]
+            },
+            {
+                q: "6. 自身实力，你选择高调炫耀还是偷偷藏拙？",
+                opts: [
+                    { text: "高调炸裂，有实力绝不憋着", type: "B" },
+                    { text: "低调潜水，闷声发大财", type: "b" }
+                ]
+            },
+            {
+                q: "7. 深夜EMO时刻，你会不会莫名其妙发疯摆烂？",
+                opts: [
+                    { text: "理智锁死，情绪稳定从不发疯", type: "T" },
+                    { text: "随心所欲，半夜发疯属于日常", type: "t" }
+                ]
+            },
+            {
+                q: "8. 遇到麻烦破防，你更喜欢？",
+                opts: [
+                    { text: "抱团求助，找人一起吐槽解决", type: "I" },
+                    { text: "独自硬扛，自己消化所有情绪", type: "i" }
+                ]
+            },
+            {
+                q: "9. 初次见面，陌生人眼里你好不好招惹？",
+                opts: [
+                    { text: "高冷不好惹，气场压制全场", type: "N" },
+                    { text: "温柔好说话，看起来超好拿捏", type: "n" }
+                ]
+            },
+            {
+                q: "10. 被人刻意冒犯，你会当场反击还是暗中记仇？",
+                opts: [
+                    { text: "当场翻脸，主打一个及时行乐", type: "B" },
+                    { text: "隐忍不发，慢慢疏远冷暴力", type: "b" }
+                ]
+            },
+            {
+                q: "11. 生活模式：严谨规划派还是随机摆烂派？",
+                opts: [
+                    { text: "极度自律，人生规划清清楚楚", type: "T" },
+                    { text: "彻底摆烂，人生随机快乐至上", type: "t" }
+                ]
+            },
+            {
+                q: "12. 周末放假，你的理想状态是？",
+                opts: [
+                    { text: "出门疯玩，社交逛街不闲着", type: "I" },
+                    { text: "宅家闭关，与世隔绝疯狂躺平", type: "i" }
+                ]
+            },
+            {
+                q: "13. 压力爆炸的时候，你是越压越强还是直接报废？",
+                opts: [
+                    { text: "压力越强，战斗力越逆天", type: "N" },
+                    { text: "压力一上来，直接躺平摆烂", type: "n" }
+                ]
+            },
+            {
+                q: "14. 朋友圈风格：公开发疯还是神秘上锁？",
+                opts: [
+                    { text: "全员可见，日常发疯全部公开", type: "B" },
+                    { text: "三天可见/锁圈，神秘感拉满", type: "b" }
+                ]
+            },
+            {
+                q: "15. 外界评价和流言，能不能左右你的心态？",
+                opts: [
+                    { text: "完全免疫，我自岿然不动", type: "T" },
+                    { text: "容易内耗，会被别人影响心情", type: "t" }
+                ]
+            },
+            {
+                q: "16. 集体合作里，你是领头羊还是边缘摸鱼人？",
+                opts: [
+                    { text: "主导全局，天生带队一把手", type: "I" },
+                    { text: "安静摸鱼，只做分内小事", type: "i" }
+                ]
+            },
+            {
+                q: "17. 客观来说，你自带一股生人勿近的大佬气场？",
+                opts: [
+                    { text: "没错，自带距离感高级气场", type: "N" },
+                    { text: "完全没有，平平无奇普通人", type: "n" }
+                ]
+            },
+            {
+                q: "18. 做人准则：张扬炸裂风还是佛系隐身风？",
+                opts: [
+                    { text: "张扬显眼，不走寻常抽象路", type: "B" },
+                    { text: "低调佛系，大隐隐于人海", type: "b" }
+                ]
+            }
+        ];
+
+        // 16套完整数据：
+        // 1.专属像素几何小人SVG插画 2.恶搞抽象超长文案 3.沙雕标签 4.离谱解读 5.搞怪语录
+        const results = {
+            "NBTI": {
+                name:"抽象全能疯王",
+                svg:`<svg viewBox="0 0 100 100"><rect x="35" y="20" width="30" height="30" fill="#2c5282"/><rect x="25" y="50" width="50" height="25" fill="#4a7cb5"/><circle cx="45" cy="32" r="3" fill="#fff"/><circle cx="55" cy="32" r="3" fill="#fff"/></svg>`,
+                tags:["天生牛逼","社交霸主","反骨满级","抗压怪物"],
+                dimensions:"N=天赋型逆天｜B=外放发疯体｜T=理智抽象派｜I=群居统治位",
+                desc:"你是NBTI宇宙顶级抽象全能疯王，天生自带王者滤镜，反骨刻进DNA。敢拍桌硬刚、敢极限作死、敢当众发疯，人群里天然是掌控全局的核心。表面理智冷静，内里抽象离谱，既能正经干活碾压众人，又能随时随地开启沙雕模式。看人通透不被洗脑，抗压能力逆天，越难越亢奋，属于老天爷追着喂饭吃的顶配人格，牛逼不需要解释，气场自动镇压全场。",
+                motto:"真理永远掌握在敢发疯的人手里。",
+                sign:"签名：我不主动牛逼，但牛逼无处不在。",
+                share:"NBTI抽象全能疯王✨ 反骨拉满+理智发疯，全场最强抽象选手！"
+            },
+            "NBTi": {
+                name:"独行抽象霸主",
+                svg:`<svg viewBox="0 0 100 100"><polygon points="50,15 70,45 30,45" fill="#366ea8"/><rect x="38" y="48" width="24" height="30" fill="#6096d0"/><circle cx="45" cy="30" r="2" fill="#fff"/></svg>`,
+                tags:["自由至上","随性发疯","天赋拉满","高冷独行"],
+                dimensions:"N=先天强者｜B=高调表达｜T=佛系理智｜i=独处修仙位",
+                desc:"典型独自美丽型抽象霸主，天生实力在线，拒绝世俗捆绑与无效社交。蹦极刺激随便冲，不爽直接摆烂，情绪自由人生自由。看起来外放洒脱，实际上极度清醒疏离，不喜欢强行合群，只爱高质量独处。发疯看心情，厉害是常态，佛系但不好欺负，散漫却实力雄厚，是游离在规则之外的野生牛逼选手。",
+                motto:"与其合群内耗，不如独自抽象。",
+                sign:"签名：人间独行，自带锋芒，随性且强悍。",
+                share:"NBTi独行抽象霸主🌌 拒绝内卷，自由发疯，一个人就是一支军队！"
+            },
+            "NBtI": {
+                name:"清醒疯批显眼包",
+                svg:`<svg viewBox="0 0 100 100"><circle cx="50" cy="35" r="18" fill="#5288c1"/><rect x="40" y="53" width="20" height="28" fill="#82b1e9"/><rect x="30" y="60" width="10" height="8" fill="#fff"/><rect x="60" y="60" width="10" height="8" fill="#fff"/></svg>`,
+                tags:["社牛显眼包","清醒疯批","爱玩敢闯","直球选手"],
+                dimensions:"N=天生优越｜B=显眼外放｜t=情绪化发疯｜I=群居活跃体",
+                desc:"全场最亮眼的抽象显眼包，社牛属性点满，情绪直白不内耗，讨厌弯弯绕绕和画大饼。喜欢刺激冒险，热爱热闹狂欢，该理智的时候极度清醒，该发疯的时候彻底放飞。做人坦荡直白，爱恨分明，不好拿捏也不好欺负。擅长在正经和疯癫之间无缝切换，表面阳光热烈，内心人间通透，是朋友圈不可或缺的抽象快乐源泉。",
+                motto:"清醒的发疯，是当代最高级生存方式。",
+                sign:"签名：热烈且自由，疯批但清醒。",
+                share:"NBtI清醒疯批显眼包💙 又疯又强又清醒，社交场上无敌选手！"
+            },
+            "NBti": {
+                name:"反骨抽象独行侠",
+                svg:`<svg viewBox="0 0 100 100"><rect x="30" y="18" width="40" height="22" fill="#275b94"/><polygon points="35,40 65,40 75,70 25,70" fill="#578fcc"/></svg>`,
+                tags:["反骨天花板","拒绝约束","极致洒脱","野生人格"],
+                dimensions:"N=先天强势｜B=叛逆外放｜t=摆烂体质｜i=低欲独处派",
+                desc:"浑身长满反骨的野生抽象独行侠，天生讨厌管束、拒绝套路、不吃画大饼那一套。遇事不爽直接拍桌反击，极限项目来者不拒，生活主打一个随心所欲。不爱合群、不爱解释、不爱讨好，别人评价完全无感。外表张扬叛逆，内心佛系摆烂，实力藏在随性之下，属于你越逼我，我越逆天的叛逆型牛逼人格。",
+                motto:"规则是给普通人定的，我只走抽象路线。",
+                sign:"签名：不受定义，不受管束，自由即正义。",
+                share:"NBti反骨抽象独行侠🔥 叛逆拉满，不好掌控，小众高级抽象人格！"
+            },
+            "NbTI": {
+                name:"闷声抽象大佬",
+                svg:`<svg viewBox="0 0 100 100"><ellipse cx="50" cy="38" rx="22" ry="18" fill="#4073ad"/><rect x="42" y="56" width="16" height="26" fill="#73a6dd"/></svg>`,
+                tags:["隐藏强者","低调封神","隐忍理智","慢热内核"],
+                dimensions:"N=天赋暗藏｜b=内敛潜行｜T=冷静看透｜I=团队兜底者",
+                desc:"典型闷声干大事的隐藏抽象大佬，外表温和无害超好说话，实际底线极高、战力爆表。不爱高调炫耀，不爱作死冒险，情绪稳定极少发疯，看破所有套路却懒得拆穿。在集体里默默兜底，遇事冷静从容，属于平时透明佛系，出事直接carry全场的隐藏王者。温柔是保护色，牛逼是硬实力，抽象藏在沉稳之下。",
+                motto:"低调发育，悄悄牛逼，惊艳所有人。",
+                sign:"签名：静水流深，内敛藏锋，大智若愚。",
+                share:"NbTI闷声抽象大佬🤫 看着温柔好拿捏，实则深藏不露超强！"
+            },
+            "NbTi": {
+                name:"佛系隐世抽象人",
+                svg:`<svg viewBox="0 0 100 100"><rect x="33" y="22" width="34" height="28" fill="#699ed6"/><circle cx="42" cy="33" r="4" fill="#b3d0ff"/><circle cx="58" cy="33" r="4" fill="#b3d0ff"/></svg>`,
+                tags:["佛系摆烂","宅家爱好者","低欲生活","天赋隐藏"],
+                dimensions:"N=天生底子厚｜b=低调隐身｜t=随缘心态｜i=宅家自闭体",
+                desc:"与世无争的佛系隐世抽象人，讨厌热闹社交、拒绝极限冒险、远离无效内卷。日常宅家躺平，情绪稳定佛系淡然，不爱吵架不爱硬刚，习惯自己消化所有烦恼。看起来平平无奇甚至有点佛系摆烂，实则天赋拉满，只要认真就能轻松碾压别人。不争不抢不炫耀，悄悄变强，安静生活，是低压力慢节奏的治愈系牛逼人格。",
+                motto:"少发疯少内耗，平平淡淡才是抽象真谛。",
+                sign:"签名：佛系度日，安稳自愈，悄悄厉害。",
+                share:"NbTi佛系隐世抽象人☁️ 摆烂但有实力，佛系但不弱小！"
+            },
+            "NbtI": {
+                name:"温柔抽象强者",
+                svg:`<svg viewBox="0 0 100 100"><polygon points="50,12 68,38 50,64 32,38" fill="#4e86c4"/><rect x="44" y="66" width="12" height="20" fill="#8cb4e8"/></svg>`,
+                tags:["温柔带刺","包容力强","团队暖核","内敛强悍"],
+                dimensions:"N=天生底蕴｜b=柔和内敛｜t=松弛佛系｜I=温柔群居型",
+                desc:"温柔到极致的抽象系强者，待人谦和包容，脾气极好极少发火，拒绝冲突拒绝硬刚。在人群里温柔兜底，默默照顾他人，不抢风头不显眼。看似软糯好说话，实则边界感极强，内心清醒有主见。不追求刺激作死，偏爱安稳舒适的生活，用温柔的方式对抗世界，以内敛的实力站稳脚跟，温柔且牛逼，和善且有棱角。",
+                motto:"温柔不是软弱，是最高级的抽象强大。",
+                sign:"签名：温柔有分寸，厉害有底线。",
+                share:"NbtI温柔抽象强者💧 外柔内刚，治愈又强悍的稀有人格！"
+            },
+            "Nbti": {
+                name:"小众隔绝抽象神",
+                svg:`<svg viewBox="0 0 100 100"><circle cx="50" cy="40" r="20" fill="#3067a3"/><polygon points="40,60 60,60 65,80 35,80" fill="#5a8fc9"/></svg>`,
+                tags:["极致社恐","神秘高冷","独立闭环","精神内收"],
+                dimensions:"N=天生高阶｜b=完全内敛｜t=自我放空｜i=隔绝社交体",
+                desc:"自带结界的小众隔绝抽象神，极度喜欢独处，反感人群扎堆和无效社交。拒绝一切极限挑战与热闹场合，情绪全部自我消化，从不当众发疯。朋友圈上锁、生活极简、社交断舍离，浑身散发清冷神秘感。不需要别人理解，不需要他人陪伴，一个人就能完成所有事，孤独且自由，清冷且强大，是小众又高级的隐世牛逼选手。",
+                motto:"独处治愈一切，热闹消耗灵魂。",
+                sign:"签名：不迎合，不将就，独自发光，清冷自渡。",
+                share:"Nbti小众隔绝抽象神🌑 高冷神秘社恐党，独处即顶配人生！"
+            },
+            "nBTI": {
+                name:"逆袭抽象战神",
+                svg:`<svg viewBox="0 0 100 100"><rect x="28" y="25" width="44" height="26" fill="#24548c"/><rect x="35" y="53" width="30" height="25" fill="#5388c2"/></svg>`,
+                tags:["后天逆袭","越挫越勇","抗压王者","群居领袖"],
+                dimensions:"n=后天修炼｜B=逆风外放｜T=苦难清醒｜I=成长型统领",
+                desc:"靠生活毒打硬生生练出来的逆袭抽象战神，没有天生优越的天赋，全靠一路碰壁、一路自愈、一路进化。从前懦弱妥协，现在敢刚敢怼、敢发疯敢反抗。抗压能力层层叠叠叠加，压力越大越能打，逆境直接开挂。擅长在人群中成长，带队扛事，清醒现实不做梦，拒绝画大饼，不信鸡汤，只用实力说话，后天逆袭的牛逼，远比天生更强更硬核。",
+                motto:"天赋不够，发疯和努力来凑。",
+                sign:"签名：万般皆苦，自渡自愈，逆风翻盘。",
+                share:"nBTI逆袭抽象战神⚔️ 不靠天赋靠咬牙，逆风成长的硬核强者！"
+            },
+            "nBTi": {
+                name:"松弛成长抽象派",
+                svg:`<svg viewBox="0 0 100 100"><ellipse cx="50" cy="36" rx="19" ry="16" fill="#6296d3"/><polygon points="42,52 58,52 62,75 38,75" fill="#91b9e6"/></svg>`,
+                tags:["慢慢变强","松弛佛系","独处成长","情绪自由"],
+                dimensions:"n=后天逆袭｜B=开朗外放｜t=发疯自由｜i=独自进化派",
+                desc:"松弛感拉满的成长型抽象选手，不靠天赋开挂，只靠日积月累慢慢升级。性格外向乐观，但极度需要独处回血，偶尔深夜发疯，日常佛系松弛。不内卷不焦虑，不跟别人攀比，在自己的节奏里稳步变强。愿意尝试新鲜刺激，接受生活所有离谱，后天修炼出强大心态与抗压能力，越长大越通透，越努力越松弛。",
+                motto:"慢慢来没关系，我的牛逼保质期很长。",
+                sign:"签名：日日精进，松弛度日，悄悄蜕变。",
+                share:"nBTi松弛成长抽象派☁️ 拒绝内耗，慢慢变强，松弛感天花板！"
+            },
+            "nBtI": {
+                name:"孤勇热血抽象人",
+                svg:`<svg viewBox="0 0 100 100"><polygon points="50,10 72,40 60,75 40,75 28,40" fill="#3b6fa9"/><rect x="45" y="42" width="10" height="15" fill="#fff"/></svg>`,
+                tags:["孤勇倔强","热血不服输","直白外放","抗压成长"],
+                dimensions:"n=苦尽甘来｜B=外放表达｜t=情绪化倔强｜I=抱团前行",
+                desc:"带着一身孤勇长大的热血抽象人，一路走来单打独斗，吃过委屈，扛过压力，硬生生练就一身硬气。性格直白外放，不爽就说，委屈不憋，敢于挑战极限和陌生环境。表面大大咧咧爱发疯，内心敏感倔强，一边自我治愈，一边咬牙前行。在集体中努力发光，不服输不认命，靠倔强和坚持，把普通人生活出逆天含金量。",
+                motto:"孤勇不是孤独，是自己给自己铠甲。",
+                sign:"签名：一腔孤勇，野蛮生长，向阳而生。",
+                share:"nBtI孤勇热血抽象人🔥 倔强不服输，自愈成长，温柔又强悍！"
+            },
+            "nBti": {
+                name:"静默沉淀抽象体",
+                svg:`<svg viewBox="0 0 100 100"><rect x="35" y="20" width="30" height="32" fill="#5084bf"/><circle cx="50" cy="28" r="5" fill="#c5daf2"/></svg>`,
+                tags:["静默沉淀","厚积薄发","低欲安稳","独处修行"],
+                dimensions:"n=后天打磨｜B=温和外放｜t=随缘摆烂｜i=独处沉淀型",
+                desc:"安静沉淀慢慢修行的抽象生命体，不喜争抢、不爱浮躁、拒绝速成式成长。外表随和开朗，内心沉稳有规划，习惯一个人消化压力、沉淀自我。不爱无效社交，不喜极限作死，偏爱安静简单的生活。一步一个脚印，慢慢升级，悄悄变厉害，看似平平无奇，实则底蕴深厚，属于典型厚积薄发，越沉淀越牛逼的类型。",
+                motto:"所有厉害，都是沉默沉淀换来的。",
+                sign:"签名：不慌不忙，静静沉淀，静待花开。",
+                share:"nBti静默沉淀抽象体🌫️ 沉淀为王，悄悄进化，低调变强！"
+            },
+            "nbTI": {
+                name:"隐忍格局抽象长",
+                svg:`<svg viewBox="0 0 100 100"><ellipse cx="50" cy="42" rx="18" ry="15" fill="#2a5e99"/><rect x="36" y="57" width="28" height="22" fill="#6497d1"/></svg>`,
+                tags:["隐忍克制","格局超大","隐性领导","情绪稳定"],
+                dimensions:"n=阅历成长｜b=内敛隐忍｜T=现实清醒｜I=统筹全局者",
+                desc:"靠阅历和磨难沉淀出大格局的抽象长者型人格，性格低调内敛，情绪极度稳定，极少发疯冲动。不争不抢，不吵不闹，却拥有极强的统筹能力与领导气场。看破世事套路，看透人性冷暖，做事稳重克制，做人温和有分寸。默默为团队兜底，无声掌控局面，不张扬不炫耀，以柔和的方式掌控全局，是现实里最靠谱、最耐看的隐性强者。",
+                motto:"真正的强大，是情绪稳定，万事从容。",
+                sign:"签名：胸有山海，静而不争，内敛而行。",
+                share:"nbTI隐忍格局抽象长🌊 格局拉满，情绪稳定，低调大佬人设！"
+            },
+            "nbTi": {
+                name:"佛系打工抽象员",
+                svg:`<svg viewBox="0 0 100 100"><rect x="32" y="25" width="36" height="24" fill="#72a3db"/><circle cx="40" cy="35" r="3" fill="#e6f0ff"/><circle cx="60" cy="35" r="3" fill="#e6f0ff"/></svg>`,
+                tags:["安稳佛系","踏实靠谱","配合型人格","低欲生存"],
+                dimensions:"n=生活打磨｜b=温顺内敛｜t=随缘心态｜i=轻度独处派",
+                desc:"安稳度日的佛系实干抽象员，性格温顺随和，不爱出风头，不爱与人争执。日常安分守己，拒绝极限冒险，情绪平稳少发疯，踏踏实实做好分内之事。看似普通不起眼，实则靠谱踏实，团队里默默付出、稳定兜底，不内卷不内耗，只求安稳自在。牛逼藏在踏实里，强大藏在佛系里，平凡但不平庸，普通但很可靠。",
+                motto:"安稳度日少发疯，平安喜乐过一生。",
+                sign:"签名：低调做事，安稳生活，温柔度日。",
+                share:"nbTi佛系打工抽象员🛋️ 踏实靠谱佛系人，不争不抢自有福！"
+            },
+            "nbtI": {
+                name:"内敛通透抽象客",
+                svg:`<svg viewBox="0 0 100 100"><polygon points="50,18 65,45 50,72 35,45" fill="#467cb8"/><circle cx="50" cy="40" r="6" fill="#b8d3f0"/></svg>`,
+                tags:["慢热清醒","心思细腻","边界感强","温和内敛"],
+                dimensions:"n=岁月成长｜b=内收克制｜t=温柔随性｜I=温和社交型",
+                desc:"慢热细腻的内敛通透抽象客，外表安静温柔，内心清醒通透，看人看事一针见血。不喜欢当众发疯，不爱高调炫耀，情绪习惯自我收敛，待人温和但边界感极强。社交分寸感满分，不凑热闹不搞冒险，生活安稳规律。在平淡日子里慢慢修炼内心，靠阅历沉淀实力，温柔内敛，清醒自持，是越相处越有味道的耐看型牛逼人格。",
+                motto:"看透不说透，是成年人最高级的抽象。",
+                sign:"签名：心有分寸，内敛清醒，温柔自持。",
+                share:"nbtI内敛通透抽象客🌙 慢热清醒小众人格，温柔有棱角！"
+            },
+            "nbti": {
+                name:"极简寡欲的神",
+                svg:`<svg viewBox="0 0 100 100"><circle cx="50" cy="38" r="22" fill="#2f649e"/><rect x="42" y="60" width="16" height="18" fill="#5c90ca"/></svg>`,
+                tags:["极简生活","寡欲低耗","独立自洽","安静强者"],
+                dimensions:"n=自我修炼｜b=极致内敛｜t=摆烂自愈｜i=完全独处派",
+                desc:"极简主义拉满的寡欲抽象神，社交极简、欲望极简、情绪极简、生活极简。远离热闹、拒绝刺激、减少内耗、戒掉胡思乱想，主打一个低耗自洽。不靠天赋，不靠人脉，不靠张扬，只靠自己一点点打磨实力。生活干净简单，情绪稳定平和，独处完全自给自足，在极简的日常里，藏着最顶级的自愈能力与内在强大。",
+                motto:"越简单越抽象，越寡欲越自由。",
+                sign:"签名：极简度日，清净自守，安静强大。",
+                share:"nbti极简寡欲抽象神❄️ 低欲望高质量人生，安静又顶级！"
+            }
+        };
+
+        let current = 0;
+        let answer = "";
+
+        const startBtn = document.getElementById("startBtn");
+        const questionBox = document.getElementById("questionBox");
+        const question = document.getElementById("question");
+        const options = document.getElementById("options");
+        const nextBtn = document.getElementById("nextBtn");
+        const resultBox = document.getElementById("resultBox");
+        const resultImg = document.getElementById("resultImg");
+        const resultType = document.getElementById("resultType");
+        const resultTag = document.getElementById("resultTag");
+        const resultDimensions = document.getElementById("resultDimensions");
+        const resultDesc = document.getElementById("resultDesc");
+        const resultMotto = document.getElementById("resultMotto");
+        const resultSign = document.getElementById("resultSign");
+        const shareType = document.getElementById("shareType");
+        const restartBtn = document.getElementById("restartBtn");
+
+        startBtn.onclick = () => {
+            startBtn.style.display = "none";
+            showQuestion();
+        };
+
+        function showQuestion() {
+            const q = questions[current];
+            question.innerText = q.q;
+            options.innerHTML = "";
+            q.opts.forEach(opt => {
+                let div = document.createElement("div");
+                div.className = "option";
+                div.innerText = opt.text;
+                div.onclick = () => {
+                    document.querySelectorAll(".option").forEach(o => o.classList.remove("active"));
+                    div.classList.add("active");
+                    answer += opt.type;
+                };
+                options.appendChild(div);
+            });
+            question.style.display = "block";
+            options.style.display = "flex";
+            nextBtn.style.display = "block";
+        }
+
+        nextBtn.onclick = () => {
+            if (!document.querySelector(".option.active")) {
+                alert("请选择一个选项");
+                return;
+            }
+            current++;
+            if (current >= questions.length) {
+                showResult();
+                return;
+            }
+            showQuestion();
+        };
+
+        function showResult() {
+            questionBox.style.display = "none";
+            resultBox.style.display = "block";
+            let key = answer.slice(0,4);
+            if (!results[key]) key = "NBTI";
+            let res = results[key];
+            // 插入专属像素几何小人SVG
+            resultImg.innerHTML = res.svg;
+            // 人格标题
+            resultType.innerText = `${key} · ${res.name}`;
+            // 沙雕标签
+            resultTag.innerHTML = res.tags.map(t=>`<span class="tag">${t}</span>`).join("");
+            // 维度恶搞解读
+            resultDimensions.innerText = res.dimensions;
+            // 超长抽象恶搞结论
+            resultDesc.innerText = res.desc;
+            // 抽象语录
+            resultMotto.innerText = `📜 人格抽象语录：${res.motto}`;
+            // 个性签名
+            resultSign.innerText = res.sign;
+            // 分享文案
+            shareType.innerText = `${key} · ${res.name}`;
+        }
+
+        restartBtn.onclick = () => {
+            current = 0;
+            answer = "";
+            resultBox.style.display = "none";
+            startBtn.style.display = "block";
+        };
+    </script>
+</body>
+</html>
